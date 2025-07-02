@@ -4,7 +4,7 @@
 
 A scalable and containerized **URL shortener service** built using **Python (Flask)**, **Redis**, **Docker**, and **Kubernetes**. It supports shortening long URLs, redirection, and scaling with real-time monitoring and load balancing.
 
-The system is architected for **high availability**, **horizontal scalability**, and **cloud-native deployment**, with auto-scaling enabled using HPA and load balancing via Ingress or LoadBalancer.
+The system is architected for **high availability**, **horizontal scalability**, and **cloud-native deployment**, with auto-scaling enabled using HPA and load balancing via LoadBalancer.
 
 ---
 
@@ -15,7 +15,7 @@ The system is architected for **high availability**, **horizontal scalability**,
 - **Containerized:** Fully Dockerized for portability and consistent environments.
 - **Kubernetes Orchestration:** Runs as multiple pods for high availability.
 - **Auto-Scaling:** Scales pods dynamically using Horizontal Pod Autoscaler.
-- **Load Balancing:** Traffic distributed using Ingress Controller or LoadBalancer.
+- **Load Balancing:** Traffic distributed using LoadBalancer.
 - **Monitoring & Logging:** Observe performance via Kubernetes-native tools.
 
 ---
@@ -39,7 +39,7 @@ The system is architected for **high availability**, **horizontal scalability**,
   - `url-shortener` Deployment (Flask App)
   - `redis` Deployment (Key-Value Store)
   - `ClusterIP` Service for internal Redis access
-  - `LoadBalancer` / `Ingress` for external access
+  - `LoadBalancer` for external access
 
 - **Scaling & Monitoring:**
   - `Horizontal Pod Autoscaler` for Flask app
