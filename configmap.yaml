@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: url-shortener-config
+data:
+  SHORT_DOMAIN: "$(minikube ip):32671"  
+  MAX_URL_LENGTH: "2048"
+  FLASK_ENV: "production"  
