@@ -1,77 +1,141 @@
-# PES2UG22CS620_633_640_646_Load-Balanced-URL-Shortener-using-Docker-Kubernetes
-# Project Overview
+# 🚀 Load-Balanced URL Shortener using Docker & Kubernetes
 
-This project is a scalable and containerized URL shortener service that allows users to submit long URLs and get a shortened version. The system is designed using Docker and Kubernetes, with a load balancer to distribute incoming traffic efficiently across multiple instances of the service.
+## 📘 Project Overview
 
-The URL mappings are stored in an in-memory key-value store running in a separate container. The system is built to handle high availability and scalability with auto-scaling and monitoring features.
+A scalable and containerized **URL shortener service** built using **Python (Flask)**, **Redis**, **Docker**, and **Kubernetes**. It supports shortening long URLs, redirection, and scaling with real-time monitoring and load balancing.
 
-# Features
+The system is architected for **high availability**, **horizontal scalability**, and **cloud-native deployment**, with auto-scaling enabled using HPA and load balancing via Ingress or LoadBalancer.
 
-Shorten URLs: Accept long URLs via an API and generate short URLs.
+---
 
-Redirection Service: Redirect users from short URLs to the original long URLs.
+## ✅ Features
 
-Containerized Deployment: Packaged into a Docker container for portability.
+- **Shorten URLs:** Accepts long URLs via an API and returns shortened links.
+- **Redirection:** Redirects from short to original URLs.
+- **Containerized:** Fully Dockerized for portability and consistent environments.
+- **Kubernetes Orchestration:** Runs as multiple pods for high availability.
+- **Auto-Scaling:** Scales pods dynamically using Horizontal Pod Autoscaler.
+- **Load Balancing:** Traffic distributed using Ingress Controller or LoadBalancer.
+- **Monitoring & Logging:** Observe performance via Kubernetes-native tools.
 
-Kubernetes Orchestration: Managed using Kubernetes with multiple instances for load balancing.
+---
 
-Scalability: Configured with Horizontal Pod Autoscaler (HPA) to scale based on CPU usage.
+## 🛠️ Tech Stack
 
-Load Balancing: Uses Ingress Controller / LoadBalancer to distribute traffic efficiently.
+| Layer             | Tech Used               |
+|------------------|--------------------------|
+| Backend           | Python (Flask)           |
+| Storage           | Redis (in-memory)        |
+| Containerization  | Docker                   |
+| Orchestration     | Kubernetes               |
+| Networking        | ClusterIP, LoadBalancer  |
+| Monitoring        | kubectl logs, HPA        |
 
-Monitoring: Logs and metrics collection to observe system performance.
+---
 
-# Technologies Used
+## ☸️ Kubernetes Components
 
-Backend: Python (Flask) 
+- **Deployments & Services:**
+  - `url-shortener` Deployment (Flask App)
+  - `redis` Deployment (Key-Value Store)
+  - `ClusterIP` Service for internal Redis access
+  - `LoadBalancer` / `Ingress` for external access
 
-Database: Redis (In-memory key-value store) 
+- **Scaling & Monitoring:**
+  - `Horizontal Pod Autoscaler` for Flask app
+  - `kubectl logs` for log inspection
+  - `load_test.py` for triggering auto-scaling
 
-Containerization: Docker
+---
 
-Orchestration & Scaling: Kubernetes
+## ▶️ How to Run the Project
 
-Networking: Kubernetes LoadBalancer, ClusterIP
+### 🔧 Option 1: Local with Docker Compose
 
-Monitoring & Logging: Kubernetes logging tools
+```bash
+docker-compose up -d --build
+docker-compose ps
+```
 
+Test shortening a URL:
 
-# Kubernetes Components
+```bash
+curl -X POST -H "Content-Type: application/json" \
+-d '{"url":"https://en.wikipedia.org/wiki/Artificial_intelligence"}' \
+http://localhost:5000/shorten
+```
 
-1. Deployment & Services
+---
 
-URL Shortener Pod (Runs multiple instances of the app)
+### ☁️ Option 2: Kubernetes with Minikube
 
-Key-Value Store Pod (Stores shortened URLs)
+#### 1. Start Minikube and Setup Docker Env
 
-ClusterIP Service (Exposes Redis internally)
+```bash
+minikube start
+eval $(minikube docker-env)
+docker build -t url-shortener:latest .
+```
 
-LoadBalancer (Exposes URL shortener to external users)
+#### 2. Deploy to Kubernetes
 
-2. Scaling & Monitoring
+```bash
+kubectl apply -f k8s/redis-deployment.yaml
+kubectl apply -f k8s/redis-service.yaml
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secret.yaml
+kubectl apply -f k8s/url-shortener-deployment.yaml
+kubectl apply -f k8s/url-shortener-service.yaml
+```
 
-Horizontal Pod Autoscaler (HPA)
+#### 3. Verify Deployments
 
-Ingress Controller for Load Balancing
+```bash
+kubectl get pods
+kubectl get services
+```
 
-Logging using kubectl logs and monitoring tools
+#### 4. Access the Application
 
-# Future Enhancements
+```bash
+minikube service url-shortener-service
+```
 
-Persistent Storage: Use a database like PostgreSQL or MongoDB instead of Redis.
+Use the given URL to shorten:
 
-CI/CD Pipeline: Automate testing and deployment using GitHub Actions / Jenkins.
+```bash
+curl -X POST -H "Content-Type: application/json" \
+-d '{"url":"https://en.wikipedia.org/wiki/Artificial_intelligence"}' \
+http://<minikube-url>/shorten
+```
 
-Enhanced Security: Implement JWT authentication and rate limiting.
+---
 
-Cloud Deployment: Deploy on AWS EKS, Google GKE, or Azure AKS.
+### 📈 Enable Auto-Scaling (HPA)
 
-# Contributors
+```bash
+kubectl apply -f k8s/hpa.yaml
+kubectl get hpa
+```
 
-Taranjot Singh Dhingra - PES2UG22CS620 
-Tushar Swami - PES2UG22CS633
-V Shreya Sivani - PES2UG22CS640
-Varshith Sagar GV - PES2UG22CS646
+(Optional) Load test to trigger HPA:
 
+```bash
+kubectl port-forward service/url-shortener-service 8080:80
+# App is now accessible at http://localhost:8080
 
+python load_test.py
+kubectl get hpa -w
+```
+
+---
+
+## 🚀 Future Enhancements
+
+- 💾 **Persistent DB**: Replace Redis with PostgreSQL or MongoDB.
+- 🔁 **CI/CD Pipeline**: Integrate with GitHub Actions or Jenkins.
+- 🔐 **Security**: Add JWT authentication and rate limiting.
+- ☁️ **Cloud Native**: Deploy to AWS EKS, GCP GKE, or Azure AKS.
+
+---
 
